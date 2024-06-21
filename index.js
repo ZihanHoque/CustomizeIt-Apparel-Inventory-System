@@ -8,7 +8,6 @@ var path = require("path"); // filepathing tool
 var multer = require("multer"); // parses all the formData sent in from the client side scripts
 var mongoose = require("mongoose"); // nice little bridging API to go from mongoDB data to standard manipulatable javascript objects
 var eventEmitter = require("node:events"); // the goblin workaround for asynchronous database functions
-// var FileReader = require("filereader");
 
 // instantiate a few modules
 var events = new eventEmitter();
