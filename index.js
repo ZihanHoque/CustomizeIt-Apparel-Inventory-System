@@ -24,7 +24,7 @@ const DBusername = process.env['MongoDB_Username'];
 const DBpass = process.env['MongoDB_Password']
 
 // initializing mongoDB
-var uri = `mongodb+srv://${DBusername}:${DBpass}@customizeit.z3n8gu5.mongodb.net/Inventory?retryWrites=true&w=majority&appName=CustomizeIt`;
+var uri = `mongodb+srv://${DBusername}:${DBpass}@customizeit.z3n8gu5.mongodb.net/testData?retryWrites=true&w=majority&appName=CustomizeIt`;
 
 var itemSchema = new mongoose.Schema({
   colour : String,
