@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
+    <script src="/javascripts/locationSelect.js"> </script>
+  </head>
+  <body>
+    <% data.forEach(location => { %>
+      <div>
+        <button onload="this.addEventListener('click', (e) => selectLocation(e))"> <%= location.locationName %> </button>
+        <button onclick="this.addEventListener('click', (e) => deleteLocation(e))"> Delete Location </button>
+      </div>
+    <% }); %>
+    <div>
+      <input id="newLocation" type="text">
+      <button onclick="addLocation()"> Add Location </button>
+    </div>
+  </body>
+</html>

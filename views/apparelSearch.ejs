@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel='stylesheet' href='/stylesheets/apparelSearch.css'/>
+    <script src="/javascripts/apparelSearch.js"></script>
+  </head>
+  <body onload="populateContainers()">
+    <div id="templateContainer"> </div>
+    <button onclick="addApparel()"> Add New Apparel </button>
+    <input id="searchBar" type="text" oninput="searchApparel()">
+    <button onclick="previousPage()"> Previous </button>
+    <button onclick="nextPage()"> Next </button>
+    <span id="pageDisplay"> </span>
+    <div class="apparelContainer"></div>
+  </body>
+</html>
