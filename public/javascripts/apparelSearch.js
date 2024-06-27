@@ -9,7 +9,6 @@ var apparelTemplate = {
   items : []
 }
 
-
 function addApparel() {
   // rewrite buildMenu for a blank template with <input type="name">s for name and code
   // disable/reenable the addNewApparel button somewhere
@@ -43,6 +42,7 @@ function addApparel() {
   var codeIN = document.createElement("input");
   nameIN.type = "text";
   codeIN.type = "text";
+  codeIN.style = "text-align:right";
   topRow.appendChild(nameIN);
   topRow.appendChild(codeIN);
   rowContainer.appendChild(topRow);
@@ -67,9 +67,9 @@ function addApparel() {
   var deleteColour = document.createElement("button");
   deleteColour.append("Delete Selected Colour");
   buttonPanel.appendChild(deleteColour);
-  var deleteApparel = document.createElement("button");
-  deleteApparel.append("Cancel");
-  buttonPanel.appendChild(deleteApparel);
+  var cancel = document.createElement("button");
+  cancel.append("Cancel");
+  buttonPanel.appendChild(cancel);
   var saveTemplate = document.createElement("button");
   saveTemplate.append("Create New Apparel");
   buttonPanel.appendChild(saveTemplate);
@@ -79,9 +79,7 @@ function addApparel() {
   column2.classList.add("column2");
   var XXSrow = document.createElement("tr");
   var XXSheader = document.createElement("th");
-  var XXSlabel = document.createElement("label");
-  XXSlabel.for = "XXS";
-  XXSheader.appendChild(XXSlabel);
+  XXSheader.append("XXS: ");
   XXSrow.appendChild(XXSheader);
   var XXSstock = document.createElement("td");
   var XXS = document.createElement("input");
@@ -95,9 +93,7 @@ function addApparel() {
 
   var XSrow = document.createElement("tr");
   var XSheader = document.createElement("th");
-  var XSlabel = document.createElement("label");
-  XSlabel.for = "XS";
-  XSheader.appendChild(XSlabel);
+  XSheader.append("XS: ");
   XSrow.appendChild(XSheader);
   var XSstock = document.createElement("td");
   var XS = document.createElement("input");
@@ -111,9 +107,7 @@ function addApparel() {
 
   var Srow = document.createElement("tr");
   var Sheader = document.createElement("th");
-  var Slabel = document.createElement("label");
-  Slabel.for = "S";
-  Sheader.appendChild(Slabel);
+  Sheader.append("S: ");
   Srow.appendChild(Sheader);
   var Sstock = document.createElement("td");
   var S = document.createElement("input");
@@ -127,9 +121,7 @@ function addApparel() {
 
   var Mrow = document.createElement("tr");
   var Mheader = document.createElement("th");
-  var Mlabel = document.createElement("label");
-  Mlabel.for = "S";
-  Mheader.appendChild(Mlabel);
+  Mheader.append("M: ");
   Mrow.appendChild(Mheader);
   var Mstock = document.createElement("td");
   var M = document.createElement("input");
@@ -137,15 +129,13 @@ function addApparel() {
   M.oninput = (e) => {
     changeDetected(e);
   }
-  M.stock.appendChild(M);
+  Mstock.appendChild(M);
   Mrow.appendChild(Mstock);
   column2.appendChild(Mrow);
 
   var Lrow = document.createElement("tr");
   var Lheader = document.createElement("th");
-  var Llabel = document.createElement("label");
-  Llabel.for = "L";
-  Lheader.appendChild(Llabel);
+  Lheader.append("L: ");
   Lrow.appendChild(Lheader);
   var Lstock = document.createElement("td");
   var L = document.createElement("input");
@@ -159,9 +149,7 @@ function addApparel() {
 
   var XLrow = document.createElement("tr");
   var XLheader = document.createElement("th");
-  var XLlabel = document.createElement("label");
-  XLlabel.for = "XL";
-  XLheader.appendChild(XLlabel);
+  XLheader.append("XL: ");
   XLrow.appendChild(XLheader);
   var XLstock = document.createElement("td");
   var XL = document.createElement("input");
@@ -175,9 +163,7 @@ function addApparel() {
 
   var XXLrow = document.createElement("tr");
   var XXLheader = document.createElement("th");
-  var XXLlabel = document.createElement("label");
-  XXLlabel.for = "XXL";
-  XXLheader.appendChild(XXLlabel);
+  XXLheader.append("XXL: ");
   XXLrow.appendChild(XXLheader);
   var XXLstock = document.createElement("td");
   var XXL = document.createElement("input");
@@ -194,13 +180,13 @@ function addApparel() {
   var saveButton = document.createElement("button");
   saveButton.append("Save changes");
   saveButton.onclick = (e) => {
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXS = XXS.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XS = XS.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.S = S.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.M = M.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.L = L.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XL = XL.value;
-    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXL = XXL.value;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXS = (XXS.value != "") ? XXS.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XS = (XS.value != "") ? XS.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.S = (S.value != "") ? S.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.M = (M.value != "") ? M.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.L = (L.value != "") ? L.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XL = (XL.value != "") ? XL.value : null;
+    apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXL = (XXL.value != "") ? XXL.value : null;
     saveButton.disabled = true;
     undoButton.disabled = true;
   }
@@ -264,7 +250,50 @@ function addApparel() {
   XXL.disabled = true;
   
   colourSelect.onchange = (e) => {
-    if (colourSelect.value) {
+    try {
+      XXS.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXS;
+    } catch (err) {
+      XXS.value = 0;
+    }
+    try {
+      XS.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XS;
+    } catch (err) {
+      XS.value = 0;
+    }
+    try {
+      S.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.S;
+    } catch (err) {
+      S.value = 0;
+    }
+    try {
+      M.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.M;
+    } catch (err) {
+      M.value = 0;
+    }
+    try {
+      L.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.L;
+    } catch (err) {
+      L.value = 0;
+    }
+    try {
+      XL.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XL;
+    } catch (err) {
+      XL.value = 0;
+    }
+    try {
+      XXL.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXL;
+    } catch (err) {
+      XXL.value = 0;
+    }
+  }
+  addColour.onclick = (e) => {
+    for (var option of colourSelect.children) {
+      if (option.value = colourIN.value) {
+        alert("Colour already exists");
+        return;
+      }
+    }
+    if (XXS.disabled = true) {
       XXS.disabled = false;
       XS.disabled = false;
       S.disabled = false;
@@ -272,6 +301,49 @@ function addApparel() {
       L.disabled = false;
       XL.disabled = false;
       XXL.disabled = false;
+    }
+    var newOpt = document.createElement("option");
+    newOpt.value = colourIN.value;
+    newOpt.append(colourIN.value);
+    colourSelect.appendChild(newOpt);
+    apparelTemplate.items.push({
+      colour : colourIN.value,
+      sizes : {
+        XXS : null,
+        XS : null,
+        S : null,
+        M : null,
+        L : null,
+        XL : null,
+        XXL : null
+      }
+    });
+    alert(JSON.stringify(apparelTemplate));
+    colourIN.value = "";
+  }
+  deleteColour.onclick = (e) => {
+    apparelTemplate.items.splice(apparelTemplate.items.findIndex((item) => item.colour == colourSelect.value), 1);
+    for (var option of colourSelect.children) {
+      if (option.value == colourSelect.value) {
+        colourSelect.removeChild(option);
+      }
+    }
+    if (colourSelect.children.length == 0) {
+      XXS.value = 0;
+      XXS.disabled = true;
+      XS.value = 0;
+      XS.disabled = true;
+      S.value = 0;
+      S.disabled = true;
+      M.value = 0;
+      M.disabled = true;
+      L.value = 0;
+      L.disabled = true;
+      XL.value = 0;
+      XL.disabled = true;
+      XXL.value = 0;
+      XXL.disabled = true;
+    } else {
       try {
         XXS.value = apparelTemplate.items.find((item) => item.colour == colourSelect.value).sizes.XXS;
       } catch (err) {
@@ -309,29 +381,7 @@ function addApparel() {
       }
     }
   }
-  addColour.onclick = (e) => {
-    var newOpt = document.createElement("option");
-    newOpt.value = colourIN.value;
-    newOpt.append(colourIN.value);
-    colourSelect.appendChild(newOpt);
-    apparelTemplate.items.push({
-      colour : colourIN.value,
-      sizes : {
-        XXS : null,
-        XS : null,
-        S : null,
-        M : null,
-        L : null,
-        XL : null,
-        XXL : null
-      }
-    });
-  }
-  deleteColour.onclick = (e) => {
-    colourSelect.removeChild(colourSelect.children.find((option) => option.value == colourSelect.value));
-    apparelTemplate.items.splice(apparelTemplate.items.findIndex((item) => item.colour == colourSelect.value), 1);
-  }
-  deleteApparel.onclick = (e) => {
+  cancel.onclick = (e) => {
     document.getElementById("templateContainer").replaceChildren();
     apparelTemplate = {
       apparelName : "",
@@ -341,13 +391,20 @@ function addApparel() {
     }
   }
   saveTemplate.onclick = (e) => {
+    for (var apparel of cursor.apparel) {
+      if (apparel.apparelName == nameIN.value || apparel.code == codeIN.value) {
+        alert("Apparel already exists");
+        return;
+      }
+    }
+    saveButton.click();
     apparelTemplate.apparelName = nameIN.value;
     apparelTemplate.code = codeIN.value;
     apparelTemplate.lastModified = new Date();
     var req = new XMLHttpRequest();
     req.open("post", "/apparel/create");
     req.onload = () => {
-      if (req.response != success) {
+      if (req.response != "success") {
         alert(req.response);
       } else {
         apparelTemplate = {
@@ -355,11 +412,11 @@ function addApparel() {
           code : "",
           lastModified : new Date(),
           items : []
-        }
+        };
         location.reload();
       }
     }
-    req.send(apparelTemplate);
+    req.send(JSON.stringify(apparelTemplate));
   }
 }
 
@@ -370,13 +427,41 @@ function updateColour(e) {
 
   var apparelChoice = hitlist.apparel.find((apparel) => apparel.apparelName == name);
   var itemChoice = apparelChoice.items.find((item) => item.colour == colour);
-  sizes.children[0].children[1].children[0].value = itemChoice.sizes.XXS;
-  sizes.children[1].children[1].children[0].value = itemChoice.sizes.XS;
-  sizes.children[2].children[1].children[0].value = itemChoice.sizes.S;
-  sizes.children[3].children[1].children[0].value = itemChoice.sizes.M;
-  sizes.children[4].children[1].children[0].value = itemChoice.sizes.L;
-  sizes.children[5].children[1].children[0].value = itemChoice.sizes.XL;
-  sizes.children[6].children[1].children[0].value = itemChoice.sizes.XXL;
+  try {
+    sizes.children[0].children[1].children[0].value = itemChoice.sizes.XXS;
+  } catch (err) {
+    sizes.children[0].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[1].children[1].children[0].value = itemChoice.sizes.XS;
+  } catch (err) {
+    sizes.children[1].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[2].children[1].children[0].value = itemChoice.sizes.S;
+  } catch (err) {
+    sizes.children[2].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[3].children[1].children[0].value = itemChoice.sizes.M;
+  } catch (err) {
+    sizes.children[3].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[4].children[1].children[0].value = itemChoice.sizes.L;
+  } catch (err) {
+    sizes.children[4].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[5].children[1].children[0].value = itemChoice.sizes.XL;
+  } catch (err) {
+    sizes.children[5].children[1].children[0].value = 0;
+  }
+  try {
+    sizes.children[6].children[1].children[0].value = itemChoice.sizes.XXL;
+  } catch (err) {
+    sizes.children[6].children[1].children[0].value = 0;
+  }
 }
 
 function addNewColour(e) {
@@ -385,9 +470,17 @@ function addNewColour(e) {
   // send an XMLHttpRequest with Name and newColour in a FormData
   // on backend side, update apparel with given Name to have a new item entry with given newColour
   // back on frontend side in the onload, append newColour as an option in the colour selector
-
+  
   var newColour = e.target.previousElementSibling;
+  var colourSelect = e.target.parentNode.previousElementSibling.children[1];
+  for (var option of colourSelect.children) {
+    if (option.value == newColour.value) {
+      alert("Colour already exists");
+      return;
+    }
+  }
   var name = e.target.parentNode.parentNode.previousElementSibling.children[0].innerText;
+  var table = e.target.parentNode.parentNode.nextElementSibling;
   var form = new FormData();
   form.append("newColour", newColour.value);
   form.append("name", name);
@@ -395,12 +488,9 @@ function addNewColour(e) {
   req.open("post", "/apparel/addColour");
   req.onload = () => {
     if (req.response != "success") {
-      alert(req.response)
+      alert(req.response);
     } else {
-      var newOpt = document.createElement("option");
-      newOpt.value = newColour.value;
-      newOpt.append(newColour.value);
-      e.target.parentNode.previousElementSibling.children[1].appendChild(newOpt);
+      location.reload();
     }
   }
   req.send(form);
@@ -413,7 +503,8 @@ function deleteSelectedColour(e) {
   // on frontend, call an empty replaceChild on colour selector to remove the element from the list
   var colourSelect = e.target.parentNode.previousElementSibling.children[1];
   var name = e.target.parentNode.parentNode.previousElementSibling.children[0].innerText;
-  var form = new FormData;
+  var table = e.target.parentNode.parentNode.nextElementSibling;
+  var form = new FormData();
   form.append("selectedColour", colourSelect.value);
   form.append("name", name);
   var req = new XMLHttpRequest();
@@ -422,7 +513,7 @@ function deleteSelectedColour(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
-      colourSelect.removeChild(colourSelect.children.find((option) => option.value == colourSelect.value));
+      location.reload();
     }
   }
   req.send(form);
@@ -435,12 +526,12 @@ function deleteApparel(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
-      e.target.parentNode.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode.parentNode);
+      location.reload();
     }  
   }
   req.send(e.target.parentNode.parentNode.previousElementSibling.children[0].innerText);
 } 
-
+   
 function saveStock(e) {
   var form = new FormData();
   var sizeTable = e.target.parentNode.parentNode.parentNode;
@@ -459,9 +550,7 @@ function saveStock(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
-      alert("Apparel data updated successfully");
-      e.target.disabled = true;
-      e.target.parentNode.nextElementSibling.children[0].disabled = true;
+      location.reload();
     }
   }
   req.send(form);
@@ -470,14 +559,13 @@ function saveStock(e) {
 function changeDetected(e) {
   e.target.parentNode.parentNode.parentNode.children[7].children[0].children[0].disabled = false;
   e.target.parentNode.parentNode.parentNode.children[7].children[1].children[0].disabled = false;
-  e.target.oninput = null;
 }
 
 function buildMenu(page) {
   var pageDisplay = document.getElementById("pageDisplay");
-  pageDisplay.innerHTML = "Showing "+(pageNum+1)+" - "+((pageNum + pageSize < hitlist.apparel.length) ? pageNum + pageSize : hitlist.apparel.length)+" out of "+hitlist.apparel.length+" items.";
+  pageDisplay.innerHTML = "Showing "+((pageNum+1 < hitlist.apparel.length) ? pageNum+1 : hitlist.apparel.length)+" - "+((pageNum + pageSize < hitlist.apparel.length) ? pageNum + pageSize : hitlist.apparel.length)+" out of "+hitlist.apparel.length+" items.";
 
-  var container = document.getElementById("appparelContainer");
+  var container = document.getElementById("apparelContainer");
   container.replaceChildren();
   for (var apparel of page) {
     var rowContainer = document.createElement("div");
@@ -527,26 +615,28 @@ function buildMenu(page) {
     }
     deleteColour.append("Delete Selected Colour");
     buttonPanel.appendChild(deleteColour);
-    var deleteApparel = document.createElement("button");
-    deleteApparel.onclick = (e) => {
+    var deleteApp = document.createElement("button");
+    deleteApp.onclick = (e) => {
       deleteApparel(e);
     }
-    deleteApparel.append("Delete Apparel");
-    buttonPanel.appendChild(deleteApparel);
+    deleteApp.append("Delete Apparel");
+    buttonPanel.appendChild(deleteApp);
     column1.appendChild(buttonPanel);
     rowContainer.appendChild(column1);
     var column2 = document.createElement("table");
     column2.classList.add("column2");
     var XXSrow = document.createElement("tr");
     var XXSheader = document.createElement("th");
-    var XXSlabel = document.createElement("label");
-    XXSlabel.for = "XXS";
-    XXSheader.appendChild(XXSlabel);
+    XXSheader.append("XXS: ");
     XXSrow.appendChild(XXSheader);
     var XXSstock = document.createElement("td");
     var XXS = document.createElement("input");
     XXS.type = "number";
-    XXS.value = apparel.items[0].sizes.XXS;
+    try {
+      XXS.value = apparel.items[0].sizes.XXS;
+    } catch (err) {
+      XXS.value = 0;
+    }
     XXS.oninput = (e) => {
       changeDetected(e);
     }
@@ -556,14 +646,16 @@ function buildMenu(page) {
 
     var XSrow = document.createElement("tr");
     var XSheader = document.createElement("th");
-    var XSlabel = document.createElement("label");
-    XSlabel.for = "XS";
-    XSheader.appendChild(XSlabel);
+    XSheader.append("XS: ");
     XSrow.appendChild(XSheader);
     var XSstock = document.createElement("td");
     var XS = document.createElement("input");
     XS.type = "number";
-    XS.value = apparel.items[0].sizes.XS;
+    try {
+      XS.value = apparel.items[0].sizes.XS;
+    } catch (err) {
+      XS.value = 0;
+    }
     XS.oninput = (e) => {
       changeDetected(e);
     }
@@ -573,14 +665,16 @@ function buildMenu(page) {
     
     var Srow = document.createElement("tr");
     var Sheader = document.createElement("th");
-    var Slabel = document.createElement("label");
-    Slabel.for = "S";
-    Sheader.appendChild(Slabel);
+    Sheader.append("S: ");
     Srow.appendChild(Sheader);
     var Sstock = document.createElement("td");
     var S = document.createElement("input");
     S.type = "number";
-    S.value = apparel.items[0].sizes.S;
+    try {
+      S.value = apparel.items[0].sizes.S;
+    } catch (err) {
+      S.value = 0;
+    }
     S.oninput = (e) => {
       changeDetected(e);
     }
@@ -590,31 +684,35 @@ function buildMenu(page) {
     
     var Mrow = document.createElement("tr");
     var Mheader = document.createElement("th");
-    var Mlabel = document.createElement("label");
-    Mlabel.for = "S";
-    Mheader.appendChild(Mlabel);
+    Mheader.append("M: ");
     Mrow.appendChild(Mheader);
     var Mstock = document.createElement("td");
     var M = document.createElement("input");
     M.type = "number";
-    M.value = apparel.items[0].sizes.M;
+    try {
+      M.value = apparel.items[0].sizes.M;
+    } catch (err) {
+      M.value = 0;
+    }
     M.oninput = (e) => {
       changeDetected(e);
     }
-    M.stock.appendChild(M);
+    Mstock.appendChild(M);
     Mrow.appendChild(Mstock);
     column2.appendChild(Mrow);
     
     var Lrow = document.createElement("tr");
     var Lheader = document.createElement("th");
-    var Llabel = document.createElement("label");
-    Llabel.for = "L";
-    Lheader.appendChild(Llabel);
+    Lheader.append("L: ");
     Lrow.appendChild(Lheader);
     var Lstock = document.createElement("td");
     var L = document.createElement("input");
     L.type = "number";
-    L.value = apparel.items[0].sizes.L;
+    try {
+      L.value = apparel.items[0].sizes.L;
+    } catch (err) {
+      L.value = 0;
+    }
     L.oninput = (e) => {
       changeDetected(e);
     }
@@ -624,14 +722,16 @@ function buildMenu(page) {
     
     var XLrow = document.createElement("tr");
     var XLheader = document.createElement("th");
-    var XLlabel = document.createElement("label");
-    XLlabel.for = "XL";
-    XLheader.appendChild(XLlabel);
+    XLheader.append("XL: ");
     XLrow.appendChild(XLheader);
     var XLstock = document.createElement("td");
     var XL = document.createElement("input");
     XL.type = "number";
-    XL.value = apparel.items[0].sizes.XL;
+    try {
+      XL.value = apparel.items[0].sizes.XL;
+    } catch (err) {
+      XL.value = 0;
+    }
     XL.oninput = (e) => {
       changeDetected(e);
     }
@@ -641,14 +741,16 @@ function buildMenu(page) {
     
     var XXLrow = document.createElement("tr");
     var XXLheader = document.createElement("th");
-    var XXLlabel = document.createElement("label");
-    XXLlabel.for = "XXL";
-    XXLheader.appendChild(XXLlabel);
+    XXLheader.append("XXL: ");
     XXLrow.appendChild(XXLheader);
     var XXLstock = document.createElement("td");
     var XXL = document.createElement("input");
     XXL.type = "number";
-    XXL.value = apparel.items[0].sizes.XXL;
+    try {
+      XXL.value = apparel.items[0].sizes.XXL;
+    } catch (err) {
+      XXL.value = 0;
+    }
     XXL.oninput = (e) => {
       changeDetected(e);
     }
@@ -678,39 +780,64 @@ function buildMenu(page) {
     undoCell.appendChild(undoButton);
     buttonRow.appendChild(undoCell);
     column2.appendChild(buttonRow);
+
+    if (!colourSelect.value) {
+      XXS.disabled = true;
+      XS.disabled = true;
+      S.disabled = true;
+      M.disabled = true;
+      L.disabled = true;
+      XL.disabled = true;
+      XXL.disabled = true;
+    }
+    
     rowContainer.appendChild(column2);
+    container.appendChild(rowContainer);
   }
 }
 
 function populateContainers() {
   var req = new XMLHttpRequest();
   req.open("post", "/loadCursor");
+  req.responseType = "json";
   req.onload = () => {
-    
+    protected = req.response;
     cursor = req.response;
-    hitlist = cursor;
-    buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
+    hitlist = structuredClone(cursor);
+    if (hitlist.apparel) {
+      buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
+    }
+    if (hitlist.apparel.length < pageSize) {
+      document.getElementById("previous").disabled = true;
+      document.getElementById("next").disabled = true;
+    }
   }
   req.send();
 }
 
-function pageUp() {
+function nextPage() { console.log("nextPage()");
   pageNum += pageSize;
   buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
 }
 
-function pageDown() {
+function previousPage() { console.log("previousPage()");
   pageNum -= pageSize;
   buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
 }
 
-function searchApparel() {
-  var query = new RegExp(document.getElementById("searchBar").value, "i");
-  hitlist = [];
-  for (var apparel of cursor) {
-    if (query.test(apparel.apparelName) || query.test(apparel.code)) {
-      hitlist.push(apparel);
-    } 
+function searchApparel() { 
+  if (document.getElementById("searchBar").value) {
+    var query = new RegExp(document.getElementById("searchBar").value, "i");
+    hitlist.apparel = [];
+    for (var apparel of cursor.apparel) {
+      if (query.test(apparel.apparelName) || query.test(apparel.code)) {
+        hitlist.apparel.push(apparel);
+      } 
+    }
+  } else {
+    hitlist = structuredClone(cursor);
   }
-  buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
+  if (hitlist.apparel) {
+    buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
+  }
 }

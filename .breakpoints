@@ -1,3 +1,12 @@
 {
-  "files": {}
+  "files": {
+    "public/javascripts/apparelSearch.js": [
+      {
+        "id": "54aa8865-01d7-47ad-a326-ce8ad88fe3d4",
+        "line": 810,
+        "version": 16164,
+        "index": 27715
+      }
+    ]
+  }
 }

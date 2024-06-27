@@ -3,14 +3,19 @@
   <head>
     <!-- <link rel='stylesheet' href='/stylesheets/style.css' /> -->
     <script src="/javascripts/locationSelect.js"> </script>
+    <meta name="viewport" content="width=device-width">
   </head>
   <body>
-    <% data.forEach(location => { %>
-      <div>
-        <button onload="this.addEventListener('click', (e) => selectLocation(e))"> <%= location.locationName %> </button>
-        <button onclick="this.addEventListener('click', (e) => deleteLocation(e))"> Delete Location </button>
-      </div>
-    <% }); %>
+    <div id="locationContainer">
+    <% if (data) { %>
+      <% data.forEach(location => { %>
+        <div>
+          <button onclick="selectLocation(event)"> <%= location.locationName %> </button>
+          <button onclick="deleteLocation(event)"> Delete Location </button>
+        </div>
+      <% }); %>
+    <% } %>
+    </div>
     <div>
       <input id="newLocation" type="text">
       <button onclick="addLocation()"> Add Location </button>

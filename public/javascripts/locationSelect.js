@@ -1,4 +1,10 @@
 function addLocation() {
+  for (var locRow of document.getElementById("locationContainer").children) {
+    if (locRow.children[0].innerText == document.getElementById("newLocation").value) {
+      alert("Location already exists");
+      return;
+    }
+  }
   var req = new XMLHttpRequest();
   req.open("post", "/addLocation");
   req.onload = () => {

@@ -8,6 +8,7 @@ var path = require("path"); // filepathing tool
 var multer = require("multer"); // parses all the formData sent in from the client side scripts
 var mongoose = require("mongoose"); // nice little bridging API to go from mongoDB data to standard manipulatable javascript objects
 var eventEmitter = require("node:events"); // the goblin workaround for asynchronous database functions
+var bodyparser = require("body-parser");
 
 // instantiate a few modules
 var events = new eventEmitter();
@@ -18,6 +19,7 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, "public")));
+
 
 // hard counters CTRL-SHIFT-I armchair hackers
 const DBusername = process.env['MongoDB_Username'];
@@ -64,10 +66,17 @@ http.createServer(app).listen(3000);
 
 app.get("/", (req, res) => {
   loadLocations();
-  res.render("locationSelect", {data : cursor});
+  events.once("location-load-complete", () => {
+    if(message != "success") {
+      console.error(message);
+    } else {
+      res.render("locationSelect", {data : cursor});
+    }
+    message = "";
+  });
 });
 
-app.post("/addLocation", (req, res) => {
+app.post("/addLocation", bodyparser.text(), (req, res) => {
   addLocation(req.body);
   events.once("location-add-complete", () => {
     res.send(message);
@@ -75,7 +84,7 @@ app.post("/addLocation", (req, res) => {
   })
 });
 
-app.post("/deleteLocation", (req, res) => {
+app.post("/deleteLocation", bodyparser.text(), (req, res) => {
   deleteLocation(req.body);
   events.once("location-delete-complete", () => {
     res.send(message);
@@ -83,7 +92,7 @@ app.post("/deleteLocation", (req, res) => {
   });
 });
 
-app.post("/selectLocation", (req, res) => {
+app.post("/selectLocation", bodyparser.text(), (req, res) => {
   var check = cursor.find((location) => location.locationName == req.body);
   if (check) {
     message = "success";
@@ -100,7 +109,9 @@ app.get("/apparelSearch", (req, res) => {
 });
 
 app.post("/loadCursor", (req, res) => {
-  cursor.apparel.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+  if (cursor.apparel.length > 1) {
+    cursor.apparel.sort((a, b) => b.lastModified.getTime() - a.lastModified.getTime());
+  }
   res.json(cursor);  
 });
 
@@ -120,15 +131,15 @@ app.post("/apparel/deleteColour", formParser.none(), (req, res) => {
   })
 });
 
-app.post("/apparel/delete", (req, res) => {
-  apparelDelete(req);
+app.post("/apparel/delete", bodyparser.text(), (req, res) => {
+  apparelDelete(req.body);
   events.once("apparel-deletion-complete", () => {
     res.send(message);
     message = "";
   });
 });
 
-app.post("/apparel/update", formParser.none(), (req, res) => {
+app.post("/apparel/update", formParser.none(), (req, res) => { 
   apparelUpdate(req);
   events.once("apparel-update-complete", () => {
     res.send(message);
@@ -136,7 +147,7 @@ app.post("/apparel/update", formParser.none(), (req, res) => {
   })
 });
 
-app.post("/apparel/create", (req, res) => {
+app.post("/apparel/create", bodyparser.text(), (req, res) => {
   createApparel(req);
   events.once("apparel-creation-complete", () => {
     res.send(message);
@@ -148,9 +159,12 @@ async function loadLocations() {
   await mongoose.connect(uri);  
 
   try {
-    cursor = await Location.find({}).exec(); 
+    cursor = await Location.find({}).exec();
+    message = "success";
+    events.emit("location-load-complete");
   } catch (err) {
-    console.error(err);
+    message = err;
+    events.emit("location-load-complete");
   }
 
   await mongoose.connection.close();
@@ -161,11 +175,12 @@ async function addLocation(locName) {
 
   try {
     var newLoc = new Location({locationName : locName});
+    cursor.push(newLoc);
     await newLoc.save();
     message = "success";
     events.emit("location-add-complete");
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("location-add-complete");
   }
 
@@ -176,11 +191,12 @@ async function deleteLocation(locName) {
   await mongoose.connect(uri);
   
   try {
-    await Location.findOneAndDelete({locationName : locName}).exec();
+    await Location.findOneAndDelete({locationName : locName});
+    cursor.splice(cursor.findIndex((location) => location.locationName == locName), 1);
     message = "success";
     events.emit("location-delete-complete")
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("location-delete-complete");
   }
 
@@ -197,7 +213,7 @@ async function addColour(req) {
     message = "success";
     events.emit("colour-addition-complete");
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("colour-addition-complete");
   }
 
@@ -214,21 +230,21 @@ async function deleteColour(req) {
     message = "success";
     events.emit("colour-deletion-complete")
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("colour-deletion-complete");
   }
 
   await mongoose.connection.close();
 }
 
-async function apparelDelete(req) {
+async function apparelDelete(apparelName) {
   await mongoose.connect(uri);
 
   try {
-    cursor.apparel.splice(cursor.apparel.findIndex((apparel) => apparel.apparelName == req.body), 1);
+    cursor.apparel.splice(cursor.apparel.findIndex((apparel) => apparel.apparelName == apparelName), 1);
     await cursor.save();
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("apparel-deletion-complete");
   }
   
@@ -243,10 +259,10 @@ async function apparelUpdate(req) {
     cursor.apparel.find((apparel) => apparel.apparelName == req.body.name).lastModified = new Date();
     await cursor.save();
     message = "success";
-    events.emit("apparel-deletion-complete");
+    events.emit("apparel-update-complete");
   } catch (err) {
-    message = err;
-    events.emit("apparel-deletion-complete");
+    message = err.toString();
+    events.emit("apparel-update-complete");
   }
   
   await mongoose.connection.close();
@@ -256,14 +272,20 @@ async function createApparel(req) {
   await mongoose.connect(uri);
 
   try {
-    cursor.apparel.push(req.body);
+    cursor.apparel.push(JSON.parse(req.body));
     await cursor.save();
     message = "success";
     events.emit("apparel-creation-complete");
   } catch (err) {
-    message = err;
+    message = err.toString();
     events.emit("apparel-creation-complete");
   }
 
   await mongoose.connection.close();
 }
+
+// bugfixing notes:
+
+// implement duplicate prevention on location name, apparel name, and item colour
+// swap children.find searching for something like for element of children
+// or maybe something like let arr = [] arr.push(...element.children);

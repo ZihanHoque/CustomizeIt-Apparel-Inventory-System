@@ -1,12 +1,22 @@
+#templateContainer {
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 #apparelContainer {
   display:flex;
-  flex-direction:column;
+  flex-direction: column;
   align-items: center;
+}
+
+#apparelContainer > div {
+  margin-top: 10vh;
 }
 
 .rowContainer {
   background-color: lightgray;
-  width:40%;
+  width:75%;
   display:flex;
   flex-flow: row wrap;
   padding: 10px;
