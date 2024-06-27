@@ -62,7 +62,7 @@ var cursor;
 var message;
 
 // locally hosting for now
-http.createServer(app).listen(3000);
+http.createServer(app).listen(8080);
 
 app.get("/", (req, res) => {
   loadLocations();
