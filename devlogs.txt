@@ -1,0 +1,14 @@
+First Update Cycle:
+
+- Redesign a bit, make things look nicer on the main page, fix a few sizing bugs
+
+
+- Colour search:
+  - Build a string with each unique colour saved in cursor/hitlist delimited with | (e.g. /red|blue|yellow/i)
+  - Build a regex and reverse test it against the search string 
+  - return the matching colour string
+  - check that colour against each apparel's item list, if a match is found, push that item to the top of the apparel list to get it to default display
+  - if colour not found, check against any other lower priority colours in the search, else take it out of hitlist
+  - concerns:
+    - search sanitization: (getting an unintended colour hit off other words e.g. "predator" triggering red)
+    - whether the array order manipulation actually changes the default displayed colour or not 

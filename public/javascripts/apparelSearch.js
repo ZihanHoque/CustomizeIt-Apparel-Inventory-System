@@ -8,6 +8,7 @@ var apparelTemplate = {
   lastModified : new Date(),
   items : []
 }
+var colourList = [];
 
 function addApparel() {
   // rewrite buildMenu for a blank template with <input type="name">s for name and code
@@ -318,7 +319,6 @@ function addApparel() {
         XXL : null
       }
     });
-    alert(JSON.stringify(apparelTemplate));
     colourIN.value = "";
   }
   deleteColour.onclick = (e) => {
@@ -392,7 +392,7 @@ function addApparel() {
   }
   saveTemplate.onclick = (e) => {
     for (var apparel of cursor.apparel) {
-      if (apparel.apparelName == nameIN.value || apparel.code == codeIN.value) {
+      if (apparel.apparelName == nameIN.value && apparel.code == codeIN.value) {
         alert("Apparel already exists");
         return;
       }
@@ -407,6 +407,9 @@ function addApparel() {
       if (req.response != "success") {
         alert(req.response);
       } else {
+        for (var item of apparelTemplate.items) {
+          colourList.push(item.colour);
+        }
         apparelTemplate = {
           apparelName : "",
           code : "",
@@ -490,6 +493,7 @@ function addNewColour(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
+      colourList.push(newColour.value);
       location.reload();
     }
   }
@@ -513,6 +517,7 @@ function deleteSelectedColour(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
+      colourList.splice(colourList.indexOf(colourSelect.value), 1);
       location.reload();
     }
   }
@@ -526,6 +531,9 @@ function deleteApparel(e) {
     if (req.response != "success") {
       alert(req.response);
     } else {
+      for (var item of cursor.find((apparel) => apparel.apparelName == e.target.parentNode.parentNode.previousElementSibling.children[0].innerText).items) {
+        colourList.splice(colourList.indexOf(item.colour), 1);
+      }
       location.reload();
     }  
   }
@@ -801,9 +809,14 @@ function populateContainers() {
   req.open("post", "/loadCursor");
   req.responseType = "json";
   req.onload = () => {
-    protected = req.response;
     cursor = req.response;
     hitlist = structuredClone(cursor);
+    colourList = [];
+    for (var apparel of cursor.apparel) {
+      for (var item of apparel.items) {
+        colourList.push(item.colour);
+      }
+    }
     if (hitlist.apparel) {
       buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
     }
@@ -826,18 +839,82 @@ function previousPage() { console.log("previousPage()");
 }
 
 function searchApparel() { 
+  // if (document.getElementById("searchBar").value) {
+  //   var query = new RegExp(document.getElementById("searchBar").value, "i");
+  //   hitlist.apparel = [];
+  //   for (var apparel of cursor.apparel) {
+  //     if (query.test(apparel.apparelName) || query.test(apparel.code)) {
+  //       hitlist.apparel.push(apparel);
+  //     } 
+  //   }
+  // } else {
+  //   hitlist = structuredClone(cursor);
+  // }
+  // if (hitlist.apparel) {
+  //   buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
+  // }
+
+  // keyword based revamp:
+  // string[] queryKeywords = searchBar.value.split(" ");
+  // check if apparel meets all keywords present
+  // if not, search for, remove, and store any colour based keywords for future processing
+  // check and populate hitlist with new keyword list
+  // go through resulting hitlist, searching for the presence of the colour keyword in apparel.items
+  // if not present, check the next colour keyword
+  // if that's present, keep it and select that colour. if no hits are found after iterating through each colour keyword, strike it from hitlist
+  // else, push that colour to the front with a swap
+
   if (document.getElementById("searchBar").value) {
-    var query = new RegExp(document.getElementById("searchBar").value, "i");
     hitlist.apparel = [];
-    for (var apparel of cursor.apparel) {
-      if (query.test(apparel.apparelName) || query.test(apparel.code)) {
-        hitlist.apparel.push(apparel);
-      } 
+    var keywords = document.getElementById("searchBar").value.split(" ");
+    var colours = [];
+    var colourTest = new RegExp("\\b" + colourList.join("\\b|\\b") + "\\b", "i");
+    for (var i in keywords) {
+      if (colourTest.test(keywords[i])) {
+        colours.push(keywords[i]);
+        keywords.splice(i, 1);
+      }
+    }
+    var numKeywords = keywords.length;
+    for (var i = 0; i < numKeywords; i++) {
+      var query = new RegExp(keywords.join(" "), "i");
+      for (var apparel of cursor.apparel) {
+        if (query.test(apparel.apparelName) || query.test(apparel.code)) {
+          hitlist.apparel.push(apparel);
+        } 
+      }
+      keywords.pop();
+    }
+    
+    colours.reverse();
+    for (var colour of colours) {
+      hitlist.apparel.sort((a, b) => {
+        if (a.items.find((item) => item.colour == colour)) {
+          return -1;
+        } else if (b.items.find((item) => item.colour == colour)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      for (var apparel of hitlist.apparel) {
+        colourTest = new RegExp(colour, "i");
+        apparel.items.sort((a, b) => {
+          if (colourTest.test(a.colour)) {
+            return -1;
+          } else if (colourTest.test(b.colour)) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      }
     }
   } else {
     hitlist = structuredClone(cursor);
   }
   if (hitlist.apparel) {
+    pageNum = 0;
     buildMenu(hitlist.apparel.slice(pageNum, pageNum + pageSize));
   }
 }

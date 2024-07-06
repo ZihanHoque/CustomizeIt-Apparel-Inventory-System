@@ -92,10 +92,40 @@ app.post("/deleteLocation", bodyparser.text(), (req, res) => {
   });
 });
 
+// function generateTotal(check) {
+//   check.apparel = [];
+//   for (var location of cursor) {
+//     for (var apparel of location.apparel) {
+//       var copy = check.apparel.find((element) => element.apparelName == apparel.apparelName);
+//       if (copy) {
+//         for (var item of apparel.items) {
+//           var itemcopy = copy.items.find((element) => element.colour == item.colour);
+//           if (itemcopy) {
+//             itemcopy.sizes.XXS += item.sizes.XXS;
+//             itemcopy.sizes.XS += item.sizes.XS;
+//             itemcopy.sizes.S += item.sizes.S;
+//             itemcopy.sizes.M += item.sizes.M;
+//             itemcopy.sizes.L += item.sizes.L;
+//             itemcopy.sizes.XL += item.sizes.XL;
+//             itemcopy.sizes.XXL += item.sizes.XXL;
+//           } else {
+//             copy.items.push(item);
+//           }
+//         }  
+//       } else {
+//         check.apparel.push(apparel);
+//       }
+//     }
+//   }
+// }
+
 app.post("/selectLocation", bodyparser.text(), (req, res) => {
   var check = cursor.find((location) => location.locationName == req.body);
   if (check) {
     message = "success";
+    // if (req.body == "Total") {
+    //   generateTotal(check);
+    // }
     cursor = check;
   } else {
     message = "location not found";
